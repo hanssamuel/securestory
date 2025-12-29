@@ -23,10 +23,16 @@ async function start() {
   await dashboardRoutes(app);
 
 
-  app.get("/health", async () => ({
+    app.get("/health", async () => ({
     ok: true,
     service: "securestory-api",
     ts: new Date().toISOString(),
+  }));
+
+  app.get("/version", async () => ({
+    ok: true,
+    service: "securestory-api",
+    git_sha: process.env.GIT_SHA ?? null,
   }));
 
   const port = Number(process.env.PORT ?? 8001);
