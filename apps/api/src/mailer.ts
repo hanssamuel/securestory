@@ -20,19 +20,10 @@ export async function sendResetEmail(to: string, resetUrl: string) {
     auth: { user, pass },
   });
 
-  const subject = "Reset your SecureStory password";
-  const text =
-`Someone requested a password reset for your SecureStory account.
-
-Reset link:
-${resetUrl}
-
-If you didn’t request this, ignore this email. This link expires soon.`;
-
   await transport.sendMail({
     from,
     to,
-    subject,
-    text,
+    subject: "Reset your SecureStory password",
+    text: `Reset link:\n${resetUrl}\n\nIf you didn’t request this, ignore this email.`,
   });
 }
