@@ -17,27 +17,6 @@ const LoginSchema = z.object({
 });
 
 export async function authRoutes(app: FastifyInstance) {
-  // TEMP: reset password (REMOVE AFTER USE)
-  app.post("/auth/reset_password", async (req, reply) => {
-  const body = req.body as { email?: string; password?: string; resetToken?: string };
-
-  const expected = process.env.ADMIN_RESET_TOKEN;
-  if (!expected) return reply.code(400).send({ error: "Reset not enabled" });
-
-  if (body?.resetToken !== expected) return reply.code(401).send({ error: "Unauthorized" });
-
-  const email = (body?.email ?? "").toLowerCase();
-  const password = body?.password ?? "";
-
-  if (!email || password.length < 8) return reply.code(400).send({ error: "Invalid payload" });
-
-  const password_hash = await bcrypt.hash(password, 12);
-
-  await query("UPDATE users SET password_hash = $1 WHERE email = $2", [password_hash, email]);
-
-  return reply.send({ ok: true, email });
-});
-
 
   // DEV MODE: allow first user creation without auth if no users exist
   app.post("/auth/register", async (req, reply) => {
