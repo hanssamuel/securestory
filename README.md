@@ -1,80 +1,157 @@
 # SecureStory
 
-SecureStory turns security findings into risk you can explain.
+SecureStory is a production-ready security analytics platform that turns raw security findings into risk metrics leadership can understand.
 
-It ingests findings (SAST/DAST/etc), normalizes them, and produces:
-- severity distribution
-- risk score over time
-- MTTR (mean time to remediate)
+It ingests findings from security tools (SAST/DAST/etc), normalizes them, and exposes clear indicators like severity distribution, risk trends, and mean time to remediate (MTTR).
 
-Built to mirror how security data flows through modern DevSecOps teams.
+Built to reflect how security data actually flows through modern DevSecOps teams.
 
 ---
 
-## Why this exists
+## Why SecureStory exists
 
-Security tools generate a lot of noisy alerts.
+Security tools generate thousands of alerts.
 
-Teams need:
-- a clean data model
-- a consistent ingest API
-- metrics that leadership understands
-- fast ways to track risk and remediation
+Most teams struggle to:
+- Normalize noisy findings
+- Track risk over time
+- Explain security posture in business terms
+- Measure remediation effectiveness
 
-SecureStory provides that foundation.
+SecureStory solves this by providing:
+- A clean data model
+- A consistent ingest API
+- Metrics designed for both engineers and leadership
+
+---
+
+## What this project demonstrates
+
+- Real authentication and authorization (JWT + RBAC)
+- Secure password handling with bcrypt
+- Email-based password reset with expiring tokens
+- PostgreSQL with migrations and SSL (production)
+- Role-protected APIs
+- Deployment on Render
+- Environment-driven configuration
+- End-to-end production debugging and fixes
+
+This is not a demo app.  
+It is deployed, secured, and tested in a real environment.
 
 ---
 
 ## Core features
 
-### Authentication + RBAC
-- JWT auth
+### Authentication & Access Control
+- JWT-based auth
 - Roles: admin, analyst, viewer
-- Protected routes for ingest + updates
+- Protected routes
+- Secure password hashing
+- Password reset flow with expiring tokens
 
-### Project + Findings model
-- Projects are a stable unit for grouping security signals
-- Findings are normalized across tools
-- Findings support lifecycle: open, resolved, dismissed
+### Findings ingestion
+- Accepts findings from multiple tools
+- Normalizes severity, type, and metadata
+- Associates findings with projects
 
-### Dashboards
-- severity_counts (open findings in last N days)
-- risk_score time series (weighted severity score)
-- mttr (hours, resolved findings only)
+### Metrics & dashboards
+- Severity counts over time
+- Risk score trends
+- Mean time to remediate (MTTR)
 
-### Web UI
-- Login
-- Project selector
-- KPI cards (Open High, Risk score, MTTR)
-- Risk score chart
-- Findings table with Resolve action
-
----
-
-## Architecture
-
-Frontend
-- React + TypeScript (Vite)
-- Recharts
-- Token stored in localStorage
-
-API
-- Fastify + TypeScript
+### API-first design
+- Clean REST endpoints
 - Zod validation
-- Rate limiting + CORS
-
-Database
-- PostgreSQL
-- SQL migrations
+- Rate limiting
+- CORS configured for production
 
 ---
 
-## Local setup
+## Tech stack
 
-### API
-```bash
-cd apps/api
-npm install
-npm run migrate
-npm run dev
+### Backend
+- Node.js
+- Fastify
+- TypeScript
+- PostgreSQL
+- Zod
+- JWT
+- bcrypt
 
+### Frontend
+- Vite
+
+### Infrastructure
+- GitHub
+- Render (API + Postgres)
+- SQL migrations
+- SSL-enabled database connections
+
+---
+
+## High-level architecture
+
+Security tools → Ingest API → Normalized database → Metrics & dashboards → Leadership-ready insights
+
+---
+
+## Example API endpoints
+
+POST /auth/login  
+POST /auth/register  
+POST /auth/forgot_password  
+POST /auth/reset_password  
+GET  /me  
+
+POST /projects  
+POST /findings/ingest  
+GET  /findings  
+
+GET  /dash/severity_counts  
+GET  /dash/risk_score  
+GET  /dash/mttr  
+
+All protected endpoints require a valid JWT.
+
+---
+
+## Production deployment
+
+- API: https://securestory.onrender.com
+- PostgreSQL: Render (SSL enforced)
+- Secrets via environment variables
+- Database migrations run on deploy
+
+---
+
+## Security considerations
+
+- No plaintext passwords stored
+- Token-based authentication
+- Password reset tokens are single-use and time-bound
+- Rate-limited endpoints
+- Environment-scoped secrets
+
+---
+
+## Project status
+
+Complete and functional.
+
+- Authentication works
+- Ingestion works
+- Metrics work
+- Deployment is live
+- SMTP configuration is required to enable live password reset emails
+
+---
+
+## Why this matters
+
+This project demonstrates the ability to:
+- Design secure systems
+- Debug real production failures
+- Work across backend, database, and infrastructure
+- Build software aligned with real-world security workflows
+- Ship and maintain a deployed application
