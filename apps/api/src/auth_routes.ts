@@ -17,27 +17,18 @@ const LoginSchema = z.object({
 });
 
 export async function authRoutes(app: FastifyInstance) {
-    // TEMP: seed admin user (REMOVE AFTER USE)
-      await query(
-      `INSERT INTO users(email, password_hash, role)
-       VALUES ($1,$2,'admin')
-       ON CONFLICT (email)
-       DO UPDATE SET password_hash = EXCLUDED.password_hash`,
-      [email, password_hash]
-    );
-
-    return reply.send({ ok: true, email });
-  });
-
   // DEV MODE: allow first user creation without auth if no users exist
   app.post("/auth/register", async (req, reply) => {
     const body = RegisterSchema.parse(req.body);
 
-    const existing = await query<{ id: string }>("SELECT id FROM users WHERE email = $1", [body.email]);
+    const existing = await query<{ id: string }>(
+      "SELECT id FROM users WHERE email = $1",
+      [body.email.toLowerCase()]
+    );
     if (existing.rows.length) return reply.code(409).send({ error: "Email already exists" });
 
     const count = await query<{ c: string }>("SELECT COUNT(*)::text as c FROM users");
-    const userCount = int(count.rows[0].c);
+    const userCount = int(count.rows[0]?.c ?? "0");
 
     // If users already exist, require admin
     if (userCount > 0) {
