@@ -18,16 +18,7 @@ const LoginSchema = z.object({
 
 export async function authRoutes(app: FastifyInstance) {
     // TEMP: seed admin user (REMOVE AFTER USE)
-  app.post("/auth/seed", async (req, reply) => {
-    const body = req.body as { email?: string; password?: string };
-
-    const email = body?.email ?? "admin@local.dev";
-    const password = body?.password ?? "Password123!";
-
-    const bcrypt = (await import("bcrypt")).default;
-    const password_hash = await bcrypt.hash(password, 10);
-
-    await query(
+      await query(
       `INSERT INTO users(email, password_hash, role)
        VALUES ($1,$2,'admin')
        ON CONFLICT (email)
