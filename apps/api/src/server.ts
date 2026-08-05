@@ -12,7 +12,15 @@ import { dashboardRoutes } from "./dashboard_routes";
 const app = Fastify({ logger: true });
 
 async function start() {
-  await app.register(cors, { origin: true });
+  // ALLOWED_ORIGINS is a comma-separated allowlist (e.g. the deployed
+  // frontend's URL). Falls back to reflecting any origin if unset, so this
+  // doesn't break the live deployment before that env var exists there --
+  // but it should be set in production.
+  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",").map((o) => o.trim()).filter(Boolean);
+  if (!allowedOrigins?.length) {
+    app.log.warn("ALLOWED_ORIGINS is not set -- CORS is reflecting any origin. Set it in production.");
+  }
+  await app.register(cors, { origin: allowedOrigins?.length ? allowedOrigins : true });
   await app.register(rateLimit, { max: 200, timeWindow: "1 minute" });
 
   await app.register(sensible);
